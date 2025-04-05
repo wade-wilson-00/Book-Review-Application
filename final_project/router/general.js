@@ -21,27 +21,49 @@ public_users.get("/", async (req, res) => {
 });
 
 // Get book details based on ISBN
-public_users.get('/isbn/:isbn',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
- });
+public_users.get("/isbn/:isbn", async (req, res) => {
+  const targetISBN = parseInt(req.params.isbn);
+  const targetBook = await books[targetISBN];
+  if (!targetBook) {
+    return res.status(404).json({ message: "ISBN not found." });
+  } else {
+    return res.status(200).json(targetBook);
+  }
+});
   
 // Get book details based on author
-public_users.get('/author/:author',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+public_users.get("/author/:author", async (req, res) => {
+  // get array of matching book objects
+  const matchingBooks = Object.values(await books).filter(
+    (book) => book.author.toLowerCase() === req.params.author.toLowerCase()
+  );
+  if (matchingBooks.length > 0) {
+    return res.status(200).send(JSON.stringify(matchingBooks, null, 4));
+  } else {
+    return res.status(404).json({ message: "No books by that author." });
+  }
 });
 
 // Get all books based on title
-public_users.get('/title/:title',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+public_users.get("/title/:title", async (req, res) => {
+  const matchingTitle = Object.values(await books).filter(
+    (book) => book.title.toLowerCase() === req.params.title.toLowerCase()
+  )[0];
+  if (matchingTitle) {
+    return res.status(200).json(matchingTitle);
+  } else {
+    return res.status(404).json({ message: "Title not found." });
+  }
 });
 
 //  Get book review
-public_users.get('/review/:isbn',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+public_users.get("/review/:isbn", function (req, res) {
+  const targetISBN = req.params.isbn;
+  const targetBook = books[targetISBN];
+  if (targetBook) {
+    return res.status(200).send(JSON.stringify(targetBook.reviews, null, 4));
+  } else {
+    return res.status(404).json({ message: "ISBN not found." });
+  }
 });
-
 module.exports.general = public_users;
