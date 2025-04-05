@@ -34,7 +34,7 @@ app.use("/customer/auth/*", function auth(req, res, next) {
   }
 });
 
-const PORT = process.env.PORT || 1337;
+const PORT = process.env.PORT || 5000;
 
 app.use("/customer", customer_routes);
 app.use("/", genl_routes);
