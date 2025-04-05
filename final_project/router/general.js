@@ -11,20 +11,13 @@ public_users.post("/register", (req,res) => {
 });
 
 // Get the book list available in the shop
-public_users.get('/', function (req, res) {
-  // Assuming you have a user object/array that you want to return
-  // This could come from a database, memory store, etc.
-  const users = getAllUsers(); // Replace with your actual function to get users
-  
-  // Set the content type to application/json
-  res.setHeader('Content-Type', 'application/json');
-  
-  // Use JSON.stringify with formatting options for a neat display
-  // The '2' parameter adds 2 spaces of indentation for better readability
-  const formattedOutput = JSON.stringify(users, null, 2);
-  
-  // Send the formatted JSON response
-  res.status(200).send(formattedOutput);
+public_users.get("/", async (req, res) => {
+  try {
+    const allBooks = await getAllBooks();
+    return res.status(200).send(JSON.stringify(allBooks, null, 4));
+  } catch (e) {
+    res.status(500).send(e);
+  }
 });
 
 // Get book details based on ISBN
